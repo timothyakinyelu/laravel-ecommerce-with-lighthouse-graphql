@@ -15,7 +15,7 @@ class CreateProductInventoriesTable extends Migration
     {
         Schema::create('product_inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products_table')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onUpdate('cascade')->onDelete('cascade');
             $table->string('warehouse')->nullable();
             $table->string('tracking_method')->nullable();
             $table->integer('min_stock_qty');

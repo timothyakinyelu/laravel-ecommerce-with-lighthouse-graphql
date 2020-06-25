@@ -15,8 +15,8 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->nullable()->constrained('categories_table')->onUpdate('cascade')->onDelete('set null');
-            $table->foreignId('discount_id')->nullable()->constrained('discounts_table')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('discount_id')->nullable()->constrained('discounts')->onUpdate('cascade')->onDelete('set null');
             $table->string('name');
             $table->string('slug')->unique();
             $table->mediumText('description');

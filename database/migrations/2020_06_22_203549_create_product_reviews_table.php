@@ -15,8 +15,8 @@ class CreateProductReviewsTable extends Migration
     {
         Schema::create('product_reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products_table')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->constrained('users_table')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('product_id')->constrained('products')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
             $table->string('title')->nullable();
             $table->mediumText('review');
             $table->float('rating')->nullable();

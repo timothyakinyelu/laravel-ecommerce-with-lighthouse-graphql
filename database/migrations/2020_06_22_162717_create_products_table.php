@@ -15,9 +15,9 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('brand_id')->nullable()->constrained('brands_table')->onUpdate('cascade')->onDelete('set null');
-            $table->foreignId('campaign_id')->nullable()->constrained('campaigns_table')->onUpdate('cascade')->onDelete('set null');
-            $table->foreignId('user_id')->nullable()->constrained('users_table')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('brand_id')->nullable()->constrained('brands')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('campaign_id')->nullable()->constrained('campaigns')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
             $table->string('name')->unique();
             $table->mediumText('short_description');
             $table->text('full_description');

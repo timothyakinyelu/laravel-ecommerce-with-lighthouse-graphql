@@ -15,8 +15,8 @@ class CreatePermissionRoleTable extends Migration
     {
         Schema::create('permission_role', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('permission_id')->constrained('permissions_table')->onUpdate('cascade')->onDelete('set null');
-            $table->foreignId('role_id')->constrained('roles_table')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('permission_id')->constrained('permissions')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('role_id')->constrained('roles')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

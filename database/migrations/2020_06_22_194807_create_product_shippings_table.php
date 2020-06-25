@@ -15,7 +15,7 @@ class CreateProductShippingsTable extends Migration
     {
         Schema::create('product_shippings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products_table')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onUpdate('cascade')->onDelete('cascade');
             $table->boolean('is_shipping_enabled');
             $table->boolean('is_delivery_free');
             $table->float('extra_shipping_charge');

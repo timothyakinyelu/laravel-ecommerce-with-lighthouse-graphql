@@ -15,7 +15,7 @@ class CreateShipmentsTable extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained('orders_table')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onUpdate('cascade')->onDelete('cascade');
             $table->mediumInteger('tracking_number')->nullable();
             $table->decimal('total_weight')->nullable();
             $table->enum('status', ['PENDING', 'SHIPPED', 'DELIVERED'])->default('PENDING');

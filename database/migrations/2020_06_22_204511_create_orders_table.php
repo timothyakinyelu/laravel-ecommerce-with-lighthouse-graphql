@@ -15,9 +15,9 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users_table')->onUpdate('cascade')->onDelete('set null');
-            $table->foreignId('shipping_address_id')->nullable()->constrained('shipping_addresses_table')->onUpdate('cascade')->onDelete('set null');
-            $table->foreignId('billing_address_id')->nullable()->constrained('billing_addresses_table')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('shipping_address_id')->nullable()->constrained('shipping_addresses')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('billing_address_id')->nullable()->constrained('billing_addresses')->onUpdate('cascade')->onDelete('set null');
             $table->string('customer_ip')->nullable();
             $table->string('payment_status')->nullable();
             $table->enum('status', ['PENDING', 'COMPLETED'])->default('PENDING');

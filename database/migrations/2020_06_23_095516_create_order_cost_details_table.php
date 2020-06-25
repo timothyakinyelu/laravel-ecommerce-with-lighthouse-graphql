@@ -15,7 +15,7 @@ class CreateOrderCostDetailsTable extends Migration
     {
         Schema::create('order_cost_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained('orders_table')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onUpdate('cascade')->onDelete('cascade');
             $table->float('order_shipping_cost')->nullable();
             $table->float('order_subtotal');
             $table->decimal('order_tax');

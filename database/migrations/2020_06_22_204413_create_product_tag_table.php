@@ -15,8 +15,8 @@ class CreateProductTagTable extends Migration
     {
         Schema::create('product_tag', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products_table');
-            $table->foreignId('tag_id')->constrained('tags_table');
+            $table->foreignId('product_id')->constrained('products');
+            $table->foreignId('tag_id')->constrained('tags');
         });
     }
 

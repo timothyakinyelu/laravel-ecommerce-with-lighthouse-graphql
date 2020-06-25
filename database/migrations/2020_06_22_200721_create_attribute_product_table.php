@@ -15,8 +15,8 @@ class CreateAttributeProductTable extends Migration
     {
         Schema::create('attribute_product', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('attribute_id')->constrained('attributes_table');
-            $table->foreignId('product_id')->constrained('products_table');
+            $table->foreignId('attribute_id')->constrained('attributes');
+            $table->foreignId('product_id')->constrained('products');
             $table->string('name');
             $table->timestamps();
         });
