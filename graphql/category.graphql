@@ -12,16 +12,16 @@ type Category {
 extend type Query {
     categories: [Category!]! @all
     # Fetch only categories whose parent id is null
-    # parents( where: _ @whereConditions(columnsEnum: "ParentsWhereColumn"): [Category!]! @all)
+    parents(where: _ @whereConditions(columnsEnum: "ParentsWhereColumn")): [Category!]! @all
 
     # Fetch only categories whose parent id is not null
     # children( where: _ @whereConditions(columnsEnum: "ChildrensWhereColumn"): [Category!]! @all)
 }
 
 # enums to filter lists by given value
-# enum ParentsWhereColumn {
-#   PARENT @enum(value: "parent_id")
-# }
+enum ParentsWhereColumn {
+  PARENT @enum(value: "parent_id")
+}
 
 # enum ChildrensWhereColumn {
 #   FEATURED @enum(value: "featured")

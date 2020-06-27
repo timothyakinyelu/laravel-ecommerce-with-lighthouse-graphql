@@ -44,4 +44,28 @@ class CategoriesTest extends TestCase
             ], $names
         );
     }
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function can_get_categories_with_parent_id_null(): void
+    {
+        $category1 = factory(Category::class)->create(['parent_id' => null]);
+        $category2 = factory(Category::class)->create(['parent_id' => $category1->id]);
+        $category3 = factory(Category::class)->create(['parent_id' => null]);
+
+        $response = $this->graphQL(/** @lang GraphQL */ '
+            {
+                parents(where: { column: PARENT, operator: IS_NULL }) {
+                    parent_id
+                }
+            }
+        ');
+
+        $id = $response->json("data.parents.*.parent_id");
+    
+
+        $this->assertEquals([null, null], $id);
+    }
 }
