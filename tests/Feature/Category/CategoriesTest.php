@@ -94,4 +94,35 @@ class CategoriesTest extends TestCase
     
         $this->assertNotNull($id);
     }
+
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function can_get_categories_where_published_is_true(): void
+    {
+        $category1 = factory(Category::class)->create(['is_published' => 0]);
+        $category2 = factory(Category::class)->create(['is_published' => 1]);
+        $category3 = factory(Category::class)->create(['is_published' => 0]);
+
+        $response = $this->graphQL(/** @lang GraphQL */ '
+            {
+                published(where: { column: PUBLISHED, operator: EQ, value:true }) {
+                    is_published
+                }
+            }
+        ');
+
+        $published = $response->json("data.published.*.is_published");
+        // dd($published);
+    
+        $this->assertSame(
+            [
+                true
+            ],
+            $published
+        );
+        // $this->assertTrue($published);
+    }
 }
