@@ -27,6 +27,11 @@ class Category extends Model
         'is_published' => 0,
     ];
 
+    protected $fillable = [
+        'name', 'parent_id', 'slug', 'description',
+        'is_published', 'image'
+    ];
+
     public function setSlugAttribute($value) {
         // grab the name and slugify it
         $this->attributes['slug'] = Str::slug($this->name);
