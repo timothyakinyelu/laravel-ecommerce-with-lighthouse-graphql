@@ -18,7 +18,7 @@ class CreateBrandsTable extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->mediumText('description');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->softDeletes();
         });
     }
