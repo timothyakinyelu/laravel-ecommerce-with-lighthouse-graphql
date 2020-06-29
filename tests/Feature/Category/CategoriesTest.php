@@ -123,6 +123,34 @@ class CategoriesTest extends TestCase
             ],
             $published
         );
-        // $this->assertTrue($published);
+    }
+
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function can_create_category(): void
+    {
+        $response = $this->graphQL(/** @lang GraphQL */ '
+            mutation CreateCategory($category: CategoryInput!) {
+                createCategory(category: $category) {
+                    id
+                    name
+                }
+            }
+        ', [
+            "category" => [
+                'name' => 'Shirts',
+                'parent_id' => null,
+                'slug' => 'shirts',
+                'description' => 'Good Shirts',
+                'is_published' => 0,
+            ]
+        ]);
+
+        // dd($response);
+
+        $response->assertStatus(200);
     }
 }
