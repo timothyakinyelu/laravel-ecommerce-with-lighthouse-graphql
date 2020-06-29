@@ -153,4 +153,56 @@ class CategoriesTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function can_update_category(): void
+    {
+        $category = $this->graphQL(/** @lang GraphQL */ '
+            mutation CreateCategory($category: CategoryInput!) {
+                createCategory(category: $category) {
+                    id
+                    name
+                }
+            }
+        ', [
+            "category" => [
+                'name' => 'Shirts',
+                'parent_id' => null,
+                'slug' => 'shirts',
+                'description' => 'Good Shirts',
+                'is_published' => 0,
+            ]
+        ]);
+
+        $id = $category->json("data.createCategory.id");
+
+        $response = $this->graphQL(/** @lang GraphQL */ '
+            mutation UpdateCategory($id: ID!, $category: CategoryInput!) {
+                updateCategory(id: $id, category: $category) {
+                    id
+                    name
+                    is_published
+                }
+            }
+        ', [
+            "id" => $id,
+            "category" => [
+                'name' => 'Shirts',
+                'parent_id' => null,
+                'slug' => 'shirts',
+                'description' => 'Good Shirts',
+                'is_published' => 1,
+            ]
+        ]);
+
+        $data = $response->json("data.updateCategory.is_published");
+        // dd($data);
+
+        $this->assertTrue($data);
+        // $response->assertStatus(200);
+    }
 }
