@@ -29,6 +29,7 @@ input CategoryInput {
 
 extend type Mutation {
   createCategory(category: CategoryInput! @spread): Category! @create
+  updateCategory(id: ID! @globalId(decode: "ID"), category: CategoryInput! @spread): Category! @update
 }
 
 # enums to filter lists by given value
