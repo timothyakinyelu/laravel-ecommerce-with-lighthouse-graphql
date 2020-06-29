@@ -5,7 +5,7 @@ type Category {
     slug: String!
     description: String
     is_published: Boolean!
-    image: String!
+    image: String
     children: [Category!]! @hasMany
 }
 
@@ -16,6 +16,19 @@ extend type Query {
 
     # Fetch only categories where is_published is true
     published( where: _ @whereConditions(columnsEnum: "PublishedWhereColumn")): [Category!]! @all
+}
+
+input CategoryInput {
+    name: String!
+    parent_id: Int
+    slug: String!
+    description: String
+    is_published: Int!
+    image: String
+}
+
+extend type Mutation {
+  createCategory(category: CategoryInput! @spread): Category! @create
 }
 
 # enums to filter lists by given value
