@@ -205,4 +205,53 @@ class CategoriesTest extends TestCase
         $this->assertTrue($data);
         // $response->assertStatus(200);
     }
+
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function can_delete_category(): void
+    {
+        $category = $this->graphQL(/** @lang GraphQL */ '
+            mutation CreateCategory($category: CategoryInput!) {
+                createCategory(category: $category) {
+                    id
+                    name
+                }
+            }
+        ', [
+            "category" => [
+                'name' => 'Shirts',
+                'parent_id' => null,
+                'slug' => 'shirts',
+                'description' => 'Good Shirts',
+                'is_published' => 0,
+            ]
+        ]);
+
+        $id = $category->json("data.createCategory.id");
+
+        $response = $this->graphQL(/** @lang GraphQL */ '
+            mutation DeleteCategory($id: ID!) {
+                deleteCategory(id: $id) {
+                    id
+                    name
+                }
+            }
+        ', [
+            "id" => $id
+        ]);
+
+        $id = $response->json("data.deleteCategory.id");
+        $name = $response->json("data.deleteCategory.name");
+
+        $this->assertDatabaseMissing('categories', [
+            'name' => $name,
+        ]);
+        
+        $this->assertDeleted('categories', [
+            'id' => $id
+        ]);
+    }
 }
