@@ -11,6 +11,6 @@ $factory->define(Category::class, function (Faker $faker) {
         'slug' => $faker->slug,
         'is_published' => 0,
         'description' => $faker->paragraph,
-        'image' => 'products/dummy/laptop-1.jpg',
+        'category_image' => 'products/dummy/laptop-1.jpg',
     ];
 });

@@ -29,7 +29,7 @@ class Category extends Model
 
     protected $fillable = [
         'name', 'parent_id', 'slug', 'description',
-        'is_published', 'image'
+        'is_published', 'category_image'
     ];
 
     public function setSlugAttribute($value) {

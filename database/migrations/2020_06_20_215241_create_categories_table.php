@@ -20,7 +20,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->mediumText('description');
-            $table->string('image')->nullable();
+            $table->string('category_image')->nullable();
             $table->boolean('is_published');
             $table->softDeletes();
         });
