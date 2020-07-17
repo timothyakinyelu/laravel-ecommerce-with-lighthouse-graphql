@@ -1,0 +1,11 @@
+type Brand {
+    id: ID! @globalId
+    name: String!
+    slug: String!
+    description: String
+    image: String
+}
+
+extend type Query {
+    brands: [Brand!]! @all
+}
