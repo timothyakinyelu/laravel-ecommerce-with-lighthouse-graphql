@@ -24,4 +24,7 @@ type Query
 
 type Mutation
 
+scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
+
 #import category.graphql
+#import brand.graphql
