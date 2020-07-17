@@ -4,6 +4,7 @@ namespace Tests\Feature\Category;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 use App\Category;
@@ -90,7 +91,6 @@ class CategoriesTest extends TestCase
         ');
 
         $id = $response->json("data.parents.*.parent_id");
-        // dd($id);
     
         $this->assertNotNull($id);
     }
@@ -115,7 +115,6 @@ class CategoriesTest extends TestCase
         ');
 
         $published = $response->json("data.published.*.is_published");
-        // dd($published);
     
         $this->assertSame(
             [
@@ -132,28 +131,44 @@ class CategoriesTest extends TestCase
      */
     public function can_create_category(): void
     {
-        $response = $this->graphQL(/** @lang GraphQL */ '
-            mutation CreateCategory($category: CategoryInput!) {
-                createCategory(category: $category) {
-                    id
-                    name
-                }
-            }
-        ', [
-            "category" => [
-                'name' => 'Shirts',
-                'parent_id' => null,
-                'slug' => 'shirts',
-                'description' => 'Good Shirts',
-                'is_published' => 0,
+        
+        $res = $this->multipartGraphQL(
+            [
+                'operations' => /** @lang JSON */
+                    '
+                    {
+                        "query": "mutation CreateCategory($category: CategoryInput!) { createCategory(category: $category) {name category_image} }",
+                        "variables" : {
+                            "category": {
+                                "name": "Shirts",
+                                "parent_id": null,
+                                "description": "Good Shirts",
+                                "is_published": 0,
+                                "category_image": null
+                            }
+                        }
+                    }
+                ',
+                'map' => /** @lang JSON */
+                    '
+                    {
+                        "0": ["variables.category.category_image"]
+                    }
+                ',
+            ],
+            [
+                '0' => UploadedFile::fake()->create('image.jpg', 500)
             ]
+        );
+
+        $name = $res->json("data.createCategory.name");
+
+        $this->assertDatabaseHas('categories', [
+            "name" => $name,
         ]);
-
-        // dd($response);
-
-        $response->assertStatus(200);
+        $res->assertStatus(200);
     }
-
+    
     /**
      * A basic feature test example.
      *
@@ -200,10 +215,8 @@ class CategoriesTest extends TestCase
         ]);
 
         $data = $response->json("data.updateCategory.is_published");
-        // dd($data);
 
         $this->assertTrue($data);
-        // $response->assertStatus(200);
     }
 
     /**
