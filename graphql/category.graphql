@@ -2,10 +2,10 @@ type Category {
     id: ID! @globalId
     name: String!
     parent_id: Int
-    slug: String!
+    slug: String
     description: String
     is_published: Boolean!
-    image: String
+    category_image: String
     children: [Category!]! @hasMany
 }
 
@@ -21,15 +21,15 @@ extend type Query {
 input CategoryInput {
     name: String!
     parent_id: Int
-    slug: String!
+    slug: String
     description: String
     is_published: Int!
-    image: String
+    category_image: Upload
 }
 
 extend type Mutation {
     # Create new Category
-    createCategory(category: CategoryInput! @spread): Category! @create
+    createCategory(category: CategoryInput! @spread): Category! @field(resolver: "CategoryMutator@create")
 
     # Update Category by id
     updateCategory(id: ID! @globalId(decode: "ID"), category: CategoryInput! @spread): Category! @update
