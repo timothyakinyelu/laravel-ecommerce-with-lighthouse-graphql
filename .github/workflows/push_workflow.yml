@@ -1,0 +1,32 @@
+name: PUSH Workflow
+
+on:
+  push:
+    branches:
+      -master
+      -dev
+
+jobs:
+  app-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        environment:
+         POSTGRES_DB: pipelines
+         POSTGRES_USER: test_user
+         POSTGRES_PASSWORD: test_user_password
+         ports:
+          - 5432
+    steps:
+      - uses: actions/checkout@v1
+      - name: Copy .env.testing
+        run: php -r "file_exists('.env.testing') || copy('.env.example', '.env.testing');"
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      - name: Generate Key
+        run: php artisan key:generate
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env: 
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+        run: vendor/bin/phpunit
