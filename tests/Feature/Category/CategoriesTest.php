@@ -132,34 +132,7 @@ class CategoriesTest extends TestCase
     public function can_create_category(): void
     {
         
-        $res = $this->multipartGraphQL(
-            [
-                'operations' => /** @lang JSON */
-                    '
-                    {
-                        "query": "mutation CreateCategory($category: CategoryInput!) { createCategory(category: $category) {name category_image} }",
-                        "variables" : {
-                            "category": {
-                                "name": "Shirts",
-                                "parent_id": null,
-                                "description": "Good Shirts",
-                                "is_published": 0,
-                                "category_image": null
-                            }
-                        }
-                    }
-                ',
-                'map' => /** @lang JSON */
-                    '
-                    {
-                        "0": ["variables.category.category_image"]
-                    }
-                ',
-            ],
-            [
-                '0' => UploadedFile::fake()->create('image.jpg', 500)
-            ]
-        );
+        $res = $this->create_category();
 
         $name = $res->json("data.createCategory.name");
 
@@ -176,22 +149,7 @@ class CategoriesTest extends TestCase
      */
     public function can_update_category(): void
     {
-        $category = $this->graphQL(/** @lang GraphQL */ '
-            mutation CreateCategory($category: CategoryInput!) {
-                createCategory(category: $category) {
-                    id
-                    name
-                }
-            }
-        ', [
-            "category" => [
-                'name' => 'Shirts',
-                'parent_id' => null,
-                'slug' => 'shirts',
-                'description' => 'Good Shirts',
-                'is_published' => 0,
-            ]
-        ]);
+        $category = $this->create_category();
 
         $id = $category->json("data.createCategory.id");
 
@@ -226,22 +184,7 @@ class CategoriesTest extends TestCase
      */
     public function can_delete_category(): void
     {
-        $category = $this->graphQL(/** @lang GraphQL */ '
-            mutation CreateCategory($category: CategoryInput!) {
-                createCategory(category: $category) {
-                    id
-                    name
-                }
-            }
-        ', [
-            "category" => [
-                'name' => 'Shirts',
-                'parent_id' => null,
-                'slug' => 'shirts',
-                'description' => 'Good Shirts',
-                'is_published' => 0,
-            ]
-        ]);
+        $category = $this->create_category();
 
         $id = $category->json("data.createCategory.id");
 
@@ -267,4 +210,39 @@ class CategoriesTest extends TestCase
             'id' => $id
         ]);
     }
+
+    private function create_category()
+    {
+        $res = $this->multipartGraphQL(
+            [
+                'operations' => /** @lang JSON */
+                    '
+                    {
+                        "query": "mutation CreateCategory($category: CategoryInput!) { createCategory(category: $category) {id name category_image} }",
+                        "variables" : {
+                            "category": {
+                                "name": "Shirts",
+                                "parent_id": null,
+                                "description": "Good Shirts",
+                                "is_published": 0,
+                                "category_image": null
+                            }
+                        }
+                    }
+                ',
+                'map' => /** @lang JSON */
+                    '
+                    {
+                        "0": ["variables.category.category_image"]
+                    }
+                ',
+            ],
+            [
+                '0' => UploadedFile::fake()->create('image.jpg', 500)
+            ]
+        );
+
+        return $res;
+    }
 }
+
