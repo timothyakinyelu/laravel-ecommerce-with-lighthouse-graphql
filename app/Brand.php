@@ -18,6 +18,11 @@ class Brand extends Model
      */
     public $timestamps = false;
 
+    protected $fillable = [
+        'name', 'slug', 'description',
+        'brand_image'
+    ];
+
     public function setSlugAttribute($value) {
         // grab the name and slugify it
         $this->attributes['slug'] = Str::slug($this->name);
