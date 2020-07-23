@@ -3,9 +3,28 @@ type Brand {
     name: String!
     slug: String!
     description: String
-    image: String
+    brand_image: String
 }
 
 extend type Query {
     brands: [Brand!]! @all
+}
+
+extend type Mutation {
+    #use custom resolver to create a mutation that allows image uploads
+    createBrand(brand: BrandInput! @spread): Brand! @field(resolver: "BrandMutator@create")
+
+    # Update Brand by id
+    updateBrand(id: ID! @globalId(decode: "ID"), brand: BrandInput! @spread): Brand! @update
+
+    # Delete Brand by id
+    deleteBrand(id: ID! @globalId(decode: "ID")): Brand! @delete(globalId: true)
+}
+
+#input type to handle form data from client
+input BrandInput {
+    name: String!
+    slug: String
+    description: String
+    brand_image: Upload
 }
