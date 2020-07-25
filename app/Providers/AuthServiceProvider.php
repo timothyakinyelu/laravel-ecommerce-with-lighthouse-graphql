@@ -26,5 +26,8 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+        if (!app()->runningInConsole()) {
+            PermissionServiceProvider::class;
+        }
     }
 }
