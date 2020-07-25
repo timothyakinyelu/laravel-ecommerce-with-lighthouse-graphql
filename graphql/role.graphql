@@ -1,0 +1,5 @@
+type Role {
+    id: ID! @globalId
+    title: String
+    role_key: String
+}

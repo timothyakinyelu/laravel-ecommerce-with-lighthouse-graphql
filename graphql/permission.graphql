@@ -1,0 +1,10 @@
+type Permission {
+    id: ID! @globalId
+    name: String
+    slug: String
+    roles: [Role!]!
+}
+
+extend type Query {
+    permissions: [Permission!]! @all
+}
