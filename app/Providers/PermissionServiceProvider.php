@@ -17,6 +17,9 @@ class PermissionServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        if (!app()->runningInConsole()) {
+            PermissionServiceProvider::class;
+        }
     }
 
     /**
@@ -25,6 +28,14 @@ class PermissionServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
+    {
+        if (!app()->runningInConsole()) {
+            $this->definePermissions();
+        }
+        
+    }
+
+    public function definePermissions()
     {
         try {
             Permission::get()->map(function ($permission) {
