@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 class Permission extends Model
 {
@@ -16,6 +17,11 @@ class Permission extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    public function setSlugAttribute($value) {
+        // grab the name and slugify it
+        $this->attributes['slug'] = Str::slug($this->name);
+    }
 
     //Relationships
     public function roles(): BelongsToMany
