@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 use App\Category;
+use App\User;
 
 class CategoriesTest extends TestCase
 {
@@ -131,15 +132,35 @@ class CategoriesTest extends TestCase
      */
     public function can_create_category(): void
     {
+        $user = $this->loginWithPermission('create-category');
+
+        if($user->can('create-category')) {
+            $res = $this->create_category();
+    
+            $name = $res->json("data.createCategory.name");
+    
+            $this->assertDatabaseHas('categories', [
+                "name" => $name,
+            ]);
+            $res->assertStatus(200);
+        }
+        // $this->assertStatus(403);
         
-        $res = $this->create_category();
+    }
 
-        $name = $res->json("data.createCategory.name");
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function cannot_create_category(): void
+    {
+        $user = factory(User::class)->create();
 
-        $this->assertDatabaseHas('categories', [
-            "name" => $name,
-        ]);
-        $res->assertStatus(200);
+        $res = $user->can('create-category');
+        $this->assertFalse($res);
+        // $this->assertStatus(403);
+        
     }
     
     /**
@@ -149,32 +170,37 @@ class CategoriesTest extends TestCase
      */
     public function can_update_category(): void
     {
+
+        $user = $this->loginWithPermission('update-category');
+        
         $category = $this->create_category();
 
         $id = $category->json("data.createCategory.id");
 
-        $response = $this->graphQL(/** @lang GraphQL */ '
-            mutation UpdateCategory($id: ID!, $category: CategoryInput!) {
-                updateCategory(id: $id, category: $category) {
-                    id
-                    name
-                    is_published
+        if($user->can('update-category')) {
+            $response = $this->graphQL(/** @lang GraphQL */ '
+                mutation UpdateCategory($id: ID!, $category: CategoryInput!) {
+                    updateCategory(id: $id, category: $category) {
+                        id
+                        name
+                        is_published
+                    }
                 }
-            }
-        ', [
-            "id" => $id,
-            "category" => [
-                'name' => 'Shirts',
-                'parent_id' => null,
-                'slug' => 'shirts',
-                'description' => 'Good Shirts',
-                'is_published' => 1,
-            ]
-        ]);
-
-        $data = $response->json("data.updateCategory.is_published");
-
-        $this->assertTrue($data);
+            ', [
+                "id" => $id,
+                "category" => [
+                    'name' => 'Shirts',
+                    'parent_id' => null,
+                    'slug' => 'shirts',
+                    'description' => 'Good Shirts',
+                    'is_published' => 1,
+                ]
+            ]);
+    
+            $data = $response->json("data.updateCategory.is_published");
+    
+            $this->assertTrue($data);
+        }
     }
 
     /**
@@ -184,31 +210,35 @@ class CategoriesTest extends TestCase
      */
     public function can_delete_category(): void
     {
+        $user = $this->loginWithPermission('delete-category');
+
         $category = $this->create_category();
 
         $id = $category->json("data.createCategory.id");
 
-        $response = $this->graphQL(/** @lang GraphQL */ '
-            mutation DeleteCategory($id: ID!) {
-                deleteCategory(id: $id) {
-                    id
-                    name
+        if($user->can('delete-category')) {
+            $response = $this->graphQL(/** @lang GraphQL */ '
+                mutation DeleteCategory($id: ID!) {
+                    deleteCategory(id: $id) {
+                        id
+                        name
+                    }
                 }
-            }
-        ', [
-            "id" => $id
-        ]);
-
-        $id = $response->json("data.deleteCategory.id");
-        $name = $response->json("data.deleteCategory.name");
-
-        $this->assertDatabaseMissing('categories', [
-            'name' => $name,
-        ]);
-        
-        $this->assertDeleted('categories', [
-            'id' => $id
-        ]);
+            ', [
+                "id" => $id
+            ]);
+    
+            $id = $response->json("data.deleteCategory.id");
+            $name = $response->json("data.deleteCategory.name");
+    
+            $this->assertDatabaseMissing('categories', [
+                'name' => $name,
+            ]);
+            
+            $this->assertDeleted('categories', [
+                'id' => $id
+            ]);
+        }
     }
 
     private function create_category()
