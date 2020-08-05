@@ -8,10 +8,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasPermissionTrait;
+use App\Traits\VerifyEmailTrait;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, SoftDeletes, HasPermissionTrait;
+    use HasApiTokens, Notifiable, SoftDeletes, HasPermissionTrait, VerifyEmailTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +23,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'email', 'password',
     ];
 
     /**
@@ -48,6 +52,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function generatePassword()
+    {
+        // Generate random string and encrypt it. 
+        return Hash::make(Str::random(35));
+    }
 
     //Relationships
     public function orders(): HasMany
