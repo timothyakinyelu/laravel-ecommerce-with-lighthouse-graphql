@@ -1,0 +1,47 @@
+input RegisterInput {
+    first_name: String!
+    last_name: String!
+    email: String!
+    password: String!
+    password_confirmation: String!
+    gender: String
+    dob: Date
+}
+
+input VerifyEmailInput {
+    token: String!
+}
+
+type RegisterResponse {
+    tokens: AuthPayload
+    status: RegisterStatus
+}
+
+type VerifiedEmailResponse {
+    tokens: AuthPayload
+    status: VerifiedStatus
+}
+
+type AuthPayload {
+    access_token: String
+    expires_in: Int
+}
+
+enum RegisterStatus {
+    VERIFY_EMAIL
+    SUCCESS
+}
+
+enum VerifiedStatus {
+    INVALID_TOKEN
+    SUCCESS
+}
+
+extend type Mutation {
+    login(
+        email: String! 
+        password: String!
+    ): String @field(resolver: "AuthMutator@resolve")
+    register(register: RegisterInput! @spread): RegisterResponse @field(resolver: "RegisterMutator@resolve")
+    verifyEmail(data: VerifyEmailInput! @spread): VerifiedEmailResponse @field(resolver: "VerifyEmailMutator@resolve")
+}
