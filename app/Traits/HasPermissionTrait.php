@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+use Illuminate\Support\Facades\Auth;
 use App\Permission;
 use App\Role;
 
@@ -124,5 +124,15 @@ trait HasPermissionTrait
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * @param $request
+     *
+     * @return mixed
+     */
+    public function asLoggedInUser($request)
+    {
+        return Auth::user();
     }
 }
