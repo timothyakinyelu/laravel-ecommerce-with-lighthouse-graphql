@@ -13,6 +13,10 @@ use League\OAuth2\Server\RequestEvent;
 use League\OAuth2\Server\ResponseTypes\ResponseTypeInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Create custom oauth grant
+ */
+
 class VerifyEmailGrant extends AbstractGrant
 {
     public function __construct(RefreshTokenRepositoryInterface $refreshTokenRepository)

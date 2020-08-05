@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use League\OAuth2\Server\AuthorizationServer;
 use Laravel\Passport\Bridge\RefreshTokenRepository;
-// use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use App\CustomGrants\VerifyEmailGrant;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
@@ -31,9 +30,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // app(AuthorizationServer::class)->enableGrantType(
-        //     $this->makeVerifyEmailGrant(), Passport::tokensExpireIn()
-        // );
         $this->app->extend(AuthorizationServer::class, function ($server) {
             return tap($server, function ($server) {
                 $server->enableGrantType(
@@ -59,6 +55,11 @@ class AuthServiceProvider extends ServiceProvider
         // Passport::refreshTokensExpireIn(Carbon::now()->addDays(10));
     }
 
+    /**
+     * custom oauth grant
+     * 
+     * @return string
+     */
     protected function makeVerifyEmailGrant()
     {
         $grant = new VerifyEmailGrant(

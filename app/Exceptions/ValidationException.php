@@ -2,6 +2,11 @@
 
 namespace App\Exceptions;
 
+/**
+ * Validation exception created because Nuwave\Lighthouse\Exceptions\ValidationException
+ * doesn't return an array
+ */
+
 class ValidationException extends \Nuwave\Lighthouse\Exceptions\ValidationException
 {
     /*

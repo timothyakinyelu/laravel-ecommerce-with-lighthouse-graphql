@@ -91,7 +91,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Create a passport client for testing.
+     * Create a passport password grant client for testing.
      */
     public function createClient()
     {
