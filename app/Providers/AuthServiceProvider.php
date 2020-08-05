@@ -31,9 +31,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        app(AuthorizationServer::class)->enableGrantType(
-            $this->makeVerifyEmailGrant(), Passport::tokensExpireIn()
-        );
+        // app(AuthorizationServer::class)->enableGrantType(
+        //     $this->makeVerifyEmailGrant(), Passport::tokensExpireIn()
+        // );
 
 
         //
