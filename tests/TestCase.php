@@ -20,7 +20,7 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        \Artisan::call('passport:install',['-vvv' => true]);
+        // \Artisan::call('passport:install',['-vvv' => true]);
         // $this->createClient();
     }
 
