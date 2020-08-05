@@ -28,6 +28,7 @@ class AuthTest extends TestCase
 
         Notification::fake();
         Event::fake([Registered::class]);
+        
         $this->createClient();
 
         $res = $this->graphQL(
@@ -76,6 +77,7 @@ class AuthTest extends TestCase
     {
         Notification::fake();
         Event::fake([\Illuminate\Auth\Events\Verified::class]);
+
         $this->createClient();
 
         $user = factory(User::class)->create([
