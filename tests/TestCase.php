@@ -95,7 +95,7 @@ abstract class TestCase extends BaseTestCase
      */
     public function createClient()
     {
-        $client = app(ClientRepository::class)->createPasswordGrantClient(null, 'test', 'http://localhost');
+        $client = app(ClientRepository::class)->createPasswordGrantClient(null, 'test', config('app.url'));
         
         config(['graph-passport-auth.client_id' => $client->id]);
         config(['graph-passport-auth.client_secret' => $client->secret]);
