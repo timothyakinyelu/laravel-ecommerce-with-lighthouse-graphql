@@ -5,6 +5,8 @@ namespace Tests;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Laravel\Passport\ClientRepository;
+use Laravel\Passport\Passport;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Permission;
@@ -14,6 +16,13 @@ use App\User;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, MakesGraphQLRequests;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        // \Artisan::call('passport:install',['-vvv' => true]);
+        // $this->createClient();
+    }
 
     /**
      * Logs a user in with specified permission(s).
@@ -79,5 +88,16 @@ abstract class TestCase extends BaseTestCase
             report($e);
             return false;
         };
+    }
+
+    /**
+     * Create a passport client for testing.
+     */
+    public function createClient()
+    {
+        $client = app(ClientRepository::class)->createPasswordGrantClient(null, 'test', 'http://localhost');
+        
+        config(['graph-passport-auth.client_id' => $client->id]);
+        config(['graph-passport-auth.client_secret' => $client->secret]);
     }
 }
