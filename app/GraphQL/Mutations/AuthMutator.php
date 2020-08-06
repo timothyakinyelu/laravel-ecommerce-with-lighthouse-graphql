@@ -14,35 +14,36 @@ use Illuminate\Support\Str;
 use App\User;
 use App\Role;
 
-class AuthMutator
+class AuthMutator extends MakeTokenResolver
 {
     /**
      * @param  null  $_
      * @param  array<string, mixed>  $args
      */
-    public function resolve($_, array $args, GraphQLContext $context = null)
+    public function resolve($_, array $args)
     {
-        $credentials = Arr::only($args, ['email', 'password']);
+        $input = Arr::only($args, ['email', 'password']);
+        $user = User::where('email', $input['email'])->first();
 
-        if(!Auth::once($credentials)) {
+        if(!Auth::once($input)) {
             throw new AuthenticationException('Login Failed');
         }
 
-        if(!$context->request->hasCookie('_token')) {
-            $token = Auth::user()->createToken('access token')->accessToken;
-            Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
-        }
-        return $token;
+        $credentials = $this->build([
+            'username' => $input['email'],
+            'password' => $input['password']
+        ]);
 
-        // if (Auth::once($credentials)) {
+        $tokens = $this->makeToken($credentials);
 
-        //     $user = auth()->user();
-        //     // return $user;
-        //     // return $user->hasRole('developer');
-        //     // return $user->givePermissionsTo('edit-tasks');
-        //     return $user->can('edit-tasks');
+
+        // if(!$context->request->hasCookie('_token')) {
+        //     $tokens = Auth::user()->createToken('access token')->accessToken;
+        //     Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
         // }
-
-        // return null;
+        return [
+            'tokens' => $tokens,
+            'user' => $user
+        ];
     }
 }
