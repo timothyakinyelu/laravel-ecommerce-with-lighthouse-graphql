@@ -36,6 +36,8 @@ class MakeTokenResolver
      * 
      * Function creates a password grant token
      * for first-party users
+     * and attaches the refresh_token
+     * to an httpOnly cookie
     */
     public function makeToken(array $credentials)
     {
@@ -61,7 +63,10 @@ class MakeTokenResolver
             true // HttpOnly
         );
 
-        return $decoded;
+        return [
+            'access_token' => $decoded['access_token'],
+            'expires_in' => $decoded['expires_in']
+        ];
     }
 
     /**
