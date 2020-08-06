@@ -83,4 +83,10 @@ class UserMutator
     //         'created_at' => Carbon::now()
     //     ]);
     // }
+
+     //     $user = auth()->user();
+        //     // return $user;
+        //     // return $user->hasRole('developer');
+        //     // return $user->givePermissionsTo('edit-tasks');
+        //     return $user->can('edit-tasks');
 }
