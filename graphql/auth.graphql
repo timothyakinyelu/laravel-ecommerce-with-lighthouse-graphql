@@ -12,6 +12,16 @@ input VerifyEmailInput {
     token: String!
 }
 
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type LoginResponse {
+    tokens: AuthPayload
+    user: User
+}
+
 type RegisterResponse {
     tokens: AuthPayload
     status: RegisterStatus
@@ -38,10 +48,7 @@ enum VerifiedStatus {
 }
 
 extend type Mutation {
-    login(
-        email: String! 
-        password: String!
-    ): String @field(resolver: "AuthMutator@resolve")
+    login(login: LoginInput! @spread): LoginResponse @field(resolver: "AuthMutator@resolve")
     register(register: RegisterInput! @spread): RegisterResponse @field(resolver: "RegisterMutator@resolve")
     verifyEmail(data: VerifyEmailInput! @spread): VerifiedEmailResponse @field(resolver: "VerifyEmailMutator@resolve")
 }
