@@ -28,7 +28,7 @@ class AuthTest extends TestCase
 
         Notification::fake();
         Event::fake([Registered::class]);
-        
+
         $this->createClient();
 
         $res = $this->graphQL(
@@ -176,23 +176,83 @@ class AuthTest extends TestCase
      *
      * @test
      */
-    // public function user_can_login(): void
-    // {
-    //     $user = factory(User::class)->create(['email' => 'lee.juniper@xo.com', 'password' => Hash::make('secret')]);
+    public function user_can_login(): void
+    {
+        $user = factory(User::class)->create(['email' => 'lee.juniper@xo.com', 'password' => Hash::make('secret')]);
 
-    //     $res = $this->graphQL(
-    //         '
-    //             mutation Login($email: String!, $password: String!) {
-    //                 login(email: $email, password: $password)
-    //             }
-    //         ', 
-    //         [
-    //             "email" => "lee.juniper@xo.com",
-    //             "password" => "secret"
-    //         ]
-    //     );
+        $this->createClient();
 
-    //     $login = $res->json("data.login");
-    //     $this->assertTrue($login);
-    // }
+        $res = $this->graphQL(
+            '
+                mutation Login($login: LoginInput!) {
+                    login(login: $login) {
+                        tokens {
+                            access_token
+                            expires_in
+                        }
+                        user {
+                            id
+                            first_name
+                            email
+                        }
+                    }
+                }
+            ', 
+            [
+                "login" => [
+                    "email" => "lee.juniper@xo.com",
+                    "password" => "secret"
+                ]
+            ]
+        );
+
+        $login = json_decode($res->getContent(), true);
+        $this->assertArrayHasKey('login', $login['data']);
+        $this->assertArrayHasKey('tokens', $login['data']['login']);
+        $this->assertNotNull($login['data']['login']['tokens']['access_token']);
+        $this->assertNotNull($login['data']['login']['tokens']['expires_in']);
+
+        $this->assertArrayHasKey('user', $login['data']['login']);
+        $this->assertNotNull($login['data']['login']['user']['first_name']);
+        $this->assertNotNull($login['data']['login']['user']['email']);
+    }
+
+    /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    public function login_auth_fail(): void
+    {
+        $user = factory(User::class)->create(['email' => 'lee.juniper@xo.com', 'password' => Hash::make('secret')]);
+
+        $this->createClient();
+
+        $res = $this->graphQL(
+            '
+                mutation Login($login: LoginInput!) {
+                    login(login: $login) {
+                        tokens {
+                            access_token
+                            expires_in
+                        }
+                        user {
+                            id
+                            first_name
+                            email
+                        }
+                    }
+                }
+            ', 
+            [
+                "login" => [
+                    "email" => "lee.juniper@xo.com",
+                    "password" => "password"
+                ]
+            ]
+        );
+
+        $login = json_decode($res->getContent(), true);
+        $this->assertarrayHasKey('errors', $login);
+    }
 }
