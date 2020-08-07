@@ -51,4 +51,5 @@ extend type Mutation {
     login(login: LoginInput! @spread): LoginResponse @field(resolver: "AuthMutator@resolve")
     register(register: RegisterInput! @spread): RegisterResponse @field(resolver: "RegisterMutator@resolve")
     verifyEmail(data: VerifyEmailInput! @spread): VerifiedEmailResponse @field(resolver: "VerifyEmailMutator@resolve")
+    refreshToken: AuthPayload @field(resolver: "RefreshTokenMutator@resolve")
 }
