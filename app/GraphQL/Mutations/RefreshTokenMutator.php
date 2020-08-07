@@ -2,6 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
+use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+
 class RefreshTokenMutator extends MakeTokenResolver
 {
     /**
