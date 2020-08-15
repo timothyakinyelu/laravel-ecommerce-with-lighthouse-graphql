@@ -12,6 +12,7 @@ use App\Traits\VerifyEmailTrait;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -34,6 +35,13 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $attributes = [
         'is_active' => 1,
     ];
+
+    /**
+     * Set DOB column save format
+     */
+    public function setDOBAttribute( $value ) {
+        $this->attributes['dob'] = (new Carbon($value))->format('Y-m-d');
+    }
 
     /**
      * The attributes that should be hidden for arrays.
