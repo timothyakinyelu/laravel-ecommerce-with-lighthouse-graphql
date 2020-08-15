@@ -4,7 +4,7 @@ type User {
     last_name: String
     email: String
     gender: String
-    dob: String
+    dob: Date
     is_active: Boolean
     ip_address: String
     last_page_visited: String
