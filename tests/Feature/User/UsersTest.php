@@ -109,7 +109,7 @@ class UsersTest extends TestCase
                     'first_name' => 'Juniper',
                     'last_name' => 'Lee',
                     'email' => 'lee.juniper@xo.com',
-                    'dob' => '1980-08-07 00:00:00',
+                    'dob' => '1980-08-07',
                     'gender' => 'Female',
                     'is_active' => false
                 ]
