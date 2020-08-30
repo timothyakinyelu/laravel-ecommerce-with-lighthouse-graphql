@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Traits\HasPermissionTrait;
 
 class Role extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasPermissionTrait;
 
     /**
      * The attribute with default values.
@@ -16,7 +17,7 @@ class Role extends Model
      * @var array
      */
     protected $attributes = [
-        'is_active' => 1,
+        'is_active' => 0,
     ];
 
     /**
