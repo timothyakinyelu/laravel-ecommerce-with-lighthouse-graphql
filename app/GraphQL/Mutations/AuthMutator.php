@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Nuwave\Lighthouse\Exceptions\AuthenticationException;
-use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 
 use App\User;
@@ -36,14 +34,9 @@ class AuthMutator extends MakeTokenResolver
 
         $tokens = $this->makeToken($credentials);
 
-
-        // if(!$context->request->hasCookie('_token')) {
-        //     $tokens = Auth::user()->createToken('access token')->accessToken;
-        //     Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
-        // }
         return [
             'tokens' => $tokens,
-            'user' => $user
+            'user' => Auth::user()
         ];
     }
 }
