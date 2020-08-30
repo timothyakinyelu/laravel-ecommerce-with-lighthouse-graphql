@@ -29,6 +29,8 @@ return [
          * make sure to return spec-compliant responses in case an error is thrown.
          */
         'middleware' => [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Nuwave\Lighthouse\Support\Http\Middleware\AcceptJson::class,
 
             // Logs in a user if they are authenticated. In contrast to Laravel's 'auth'
@@ -202,6 +204,7 @@ return [
     */
 
     'error_handlers' => [
+        \App\Exceptions\AuthException::class,
         \Nuwave\Lighthouse\Execution\ExtensionErrorHandler::class,
         \Nuwave\Lighthouse\Execution\ReportingErrorHandler::class,
     ],
