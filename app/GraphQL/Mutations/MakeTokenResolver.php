@@ -3,12 +3,22 @@
 namespace App\GraphQL\Mutations;
 
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Application;
 use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use DB;
 
 class MakeTokenResolver
 {
     const REFRESH_TOKEN = 'refreshToken';
+    private $request;
+
+    public function __construct(Application $app)
+    {
+        $this->request = $app->make('request');
+    }
 
     /**
      * @param  array<string, mixed>  $args
@@ -56,9 +66,9 @@ class MakeTokenResolver
         Cookie::queue(
             self::REFRESH_TOKEN,
             $decoded['refresh_token'],
-            864000, // 10 days
-            null,
-            null,
+            time() + 60 * 60 * 24 * 10, // 10 days
+            '/',
+            $this->request->getHost(),
             false,
             true // HttpOnly
         );
@@ -74,12 +84,37 @@ class MakeTokenResolver
     */
     public function attemptRefresh($context)
     {
+        $jwt = trim(preg_replace('/^(?:\s+)?Bearer\s/', '', $this->request->header('authorization')));
+        $decodedJWT = (new \Lcobucci\JWT\Parser())->parse($jwt);
+
+        $_token = $decodedJWT->getClaim('jti');
+        $expires_at = $decodedJWT->getClaim('exp');
+
+        $access_token = DB::table('oauth_access_tokens')
+        ->select('user_id')
+        ->where('id', $_token)
+        ->first();
+
+        $userID = $access_token->user_id;
+
         $refreshToken = $context->request->cookie(self::REFRESH_TOKEN);
 
-        $credentials = $this->build([
-            'refresh_token' => $refreshToken
-        ], 'refresh_token',);
+        // Check if refresh_token has expired
+        $data = DB::table('oauth_refresh_tokens')
+        ->select('id', 'expires_at')
+        ->where('access_token_id', $_token)
+        ->where('revoked', 0)
+        ->first();
 
-        return $this->makeToken($credentials);
+        $time_of_expiry = Carbon::parse($data->expires_at)->timestamp;
+
+        if($time_of_expiry > Carbon::now()->timestamp) {
+            $credentials = $this->build([
+                'refresh_token' => $refreshToken
+            ], 'refresh_token',);
+
+            return $this->makeToken($credentials);
+        }
+        throw new AuthenticationException('Authentication failed');
     }
 }
