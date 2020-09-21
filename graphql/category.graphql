@@ -5,17 +5,23 @@ type Category {
     slug: String
     description: String
     is_published: Boolean!
+    published: Boolean
     category_image: String
     children: [Category!]! @hasMany
+    parent: Category @belongsTo
 }
 
 extend type Query {
-    categories: [Category!]! @all
+    categories(page: Int): PaginateRequest @field(resolver: "CategoriesResolver@categories")
     # Fetch categories by parent_id
-    parents(where: _ @whereConditions(columnsEnum: "ParentsWhereColumn")): [Category!]! @all
+    parents(
+        where: _ @whereConditions(columnsEnum: "ParentsWhereColumn")
+    ): [Category!]! @all
 
     # Fetch only categories where is_published is true
-    published( where: _ @whereConditions(columnsEnum: "PublishedWhereColumn")): [Category!]! @all
+    published(
+        where: _ @whereConditions(columnsEnum: "PublishedWhereColumn")
+    ): [Category!]! @all
 }
 
 input CategoryInput {
@@ -29,20 +35,30 @@ input CategoryInput {
 
 extend type Mutation {
     # Create new Category
-    createCategory(category: CategoryInput! @spread): Category! @field(resolver: "CategoryMutator@create")
+    createCategory(category: CategoryInput! @spread): Category!
+        @field(resolver: "CategoryMutator@create")
 
     # Update Category by id
-    updateCategory(id: ID! @globalId(decode: "ID"), category: CategoryInput! @spread): Category! @update
-    
+    updateCategory(
+        id: ID! @globalId(decode: "ID")
+        category: CategoryInput! @spread
+    ): Category! @update
+
     # Delete Category by id
-    deleteCategory(id: ID! @globalId(decode: "ID")): Category! @delete(globalId: true)
+    deleteCategory(id: ID! @globalId(decode: "ID")): Category!
+        @delete(globalId: true)
 }
 
 # enums to filter lists by given value
 enum ParentsWhereColumn {
-  PARENT @enum(value: "parent_id")
+    PARENT @enum(value: "parent_id")
 }
 
 enum PublishedWhereColumn {
-  PUBLISHED @enum(value: "is_published")
+    PUBLISHED @enum(value: "is_published")
+}
+
+type PaginateRequest {
+    data: [Category]
+    pageData: PageItems
 }

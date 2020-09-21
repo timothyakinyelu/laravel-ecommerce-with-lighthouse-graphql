@@ -26,6 +26,13 @@ type Mutation
 
 # "A scalar for handling file uploads"
 scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
+type PageItems {
+    total: Int
+    lastPage: Int
+    perPage: Int
+    currentPage: Int
+    path: String
+}
 
 #import category.graphql
 #import brand.graphql
