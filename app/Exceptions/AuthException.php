@@ -18,6 +18,12 @@ class AuthException implements ErrorHandler
             return $response;
         }
 
+        if($response['message'] === 'Login Failed') {
+            $response['extensions']['code'] = 400;
+
+            return $response;
+        }
+
         return $next($error);
     }
 }

@@ -20,6 +20,15 @@ class AuthMutator extends MakeTokenResolver
      */
     public function resolve($_, array $args)
     {
+        $validator = Validator::make($args, [
+            'email' => 'required|email|regex:/^.+@.+$/i',
+            'password' => 'required|min:6|'
+        ]);
+
+        if($validator->fails()) {
+            throw new AuthenticationException('Invalid Credentials');
+        }
+
         $input = Arr::only($args, ['email', 'password']);
         $user = User::where('email', $input['email'])->first();
 
