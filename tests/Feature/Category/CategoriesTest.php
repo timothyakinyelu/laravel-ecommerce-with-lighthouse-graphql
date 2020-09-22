@@ -26,15 +26,19 @@ class CategoriesTest extends TestCase
         $category3 = factory(Category::class)->create(['name' => "Cat3"]);
 
         $response = $this->graphQL(/** @lang GraphQL */ '
-            {
-                categories {
-                    id
-                    name
+            query GetCategories($currentPage: Int) {
+                categories(page: $currentPage) {
+                    data {
+                        id
+                        name
+                    }
                 }
             }
-        ');
+        ', [
+            "currentPage" => null
+        ]);
 
-        $names = $response->json("data.categories.*.name");
+        $names = $response->json("data.categories.data.*.name");
 
         $this->assertCount(3, $names);
 

@@ -48,7 +48,7 @@ class CategoriesResolver
         
         if(count($data) > 0) {
             // $items = $categories->toArray($args);
-            $perPage = 2;
+            $perPage = 3;
             $total = count($data);
             // dd($total);
 
